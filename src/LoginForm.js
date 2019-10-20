@@ -3,34 +3,21 @@ import { View, TouchableOpacity, Text, TextInput, ActivityIndicator } from 'reac
 import firebase from 'firebase';
 
 class LoginForm extends Component {
-  state = { email: '', password: '', error: '', loading: false};
-
+  state = { 
+    loading: false,
+    email: '',
+    password: ''
+  };
+  
   onButtonPress() {
-    const { email, password } = this.state;
-    this.setState({error: '', loading: true});
-
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((this.onLoginSuccess.bind(this)))
-      .catch(() => {
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then((this.onLoginSuccess.bind(this)))
-          .catch((this.onLoginFail.bind(this)));
-      });
-  }
-
-  onLoginSuccess() {
+    
     this.setState({
-      email: '',
-      password: '',
-      loading: false,
-      error: ''
+      loading: true
     });
-  }
 
-  onLoginFail() {
-    this.setState({
-      loading: false,
-      error: 'Authentication Failed'
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(error => {
+      firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(error => {
+      });
     });
   }
 
@@ -40,7 +27,7 @@ class LoginForm extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={this.onButtonPress.bind(this)} style={styles.buttonStyle}>
+      <TouchableOpacity onPress={()=>this.onButtonPress()} style={styles.buttonStyle}>
         <Text style={styles.textStyle}>
           ログイン
         </Text>
@@ -55,9 +42,8 @@ class LoginForm extends Component {
           <TextInput
               placeholder="user@gmail.com"
               autoCorrect={false}
-              value={this.state.email}
-              onChangeText={email => this.setState({ email })}
               style={styles.inputStyle}
+              onChangeText={(email) => this.setState({email})}
             />
         </View>
         <View style={styles.wrap}>
@@ -65,9 +51,8 @@ class LoginForm extends Component {
               secureTextEntry
               placeholder="password"
               autoCorrect={false}
-              value={this.state.password}
-              onChangeText={password => this.setState({ password })}
               style={styles.inputStyle}
+              onChangeText={(password) => this.setState({password})}
             />
         </View>
 
@@ -96,6 +81,21 @@ const styles = {
     backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
+    borderColor: '#007aff'
+  },
+  inputStyle: {
+    color: '#000',
+    paddingRight: 5,
+    paddingLeft: 5,
+    fontSize: 18,
+    lineHeight: 23,
+    height: 30,
+    borderWidth: 1,
+    borderColor: '#333'
+  }
+}
+
+export default LoginForm;
     borderColor: '#007aff'
   },
   inputStyle: {
